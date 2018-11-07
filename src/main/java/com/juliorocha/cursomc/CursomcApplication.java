@@ -8,8 +8,12 @@ import org.springframework.boot.SpringApplication;
 import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.juliorocha.cursomc.domain.Categoria;
+import com.juliorocha.cursomc.domain.Cidade;
+import com.juliorocha.cursomc.domain.Estado;
 import com.juliorocha.cursomc.domain.Produto;
 import com.juliorocha.cursomc.repositories.CategoriaRepository;
+import com.juliorocha.cursomc.repositories.CidadeRepository;
+import com.juliorocha.cursomc.repositories.EstadoRepository;
 import com.juliorocha.cursomc.repositories.ProdutoRepository;
 
 @SpringBootApplication
@@ -20,6 +24,10 @@ public class CursomcApplication implements CommandLineRunner{
 	private CategoriaRepository categoriaRespository;
 	@Autowired
 	private ProdutoRepository produtoRepository;
+	@Autowired
+	private EstadoRepository estadoRepository;
+	@Autowired
+	private CidadeRepository cidadeRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -50,13 +58,34 @@ public class CursomcApplication implements CommandLineRunner{
 		p1.getCategorias().addAll(Arrays.asList(cat1));
 		p2.getCategorias().addAll(Arrays.asList(cat1,cat2));
 		p3.getCategorias().addAll(Arrays.asList(cat1));
-		
+	
+
 		/*GRAVA CATEGORIAS NO BANCO H2*/
 		categoriaRespository.save(Arrays.asList(cat1, cat2));
 		
 		
 		/*GRAVA PRODUTOS NO BANCO H2*/
 		produtoRepository.save(Arrays.asList(p1,p2,p3));
+
+		/* INCLUI ESTADOS*/
+		Estado est1 = new Estado(null,"Minas Gerais");
+		Estado est2 = new Estado(null, "São Paulo");
+		
+		/* INCLUI CIDADES*/
+		Cidade c1 = new Cidade(null, "Uberlandia", est1);
+		Cidade c2 = new Cidade(null, "São Paulo", est2);
+		Cidade c3 = new Cidade(null, "Campinas", est2);
+		
+		// FAZ O RELACIONAMENTOS DE ESTADO E SUAS CIDADES
+		est1.getCidades().addAll(Arrays.asList(c1));
+		est2.getCidades().addAll(Arrays.asList(c2,c3));
+		
+		
+		// GRAVA ESTADOS NO BANCO
+		estadoRepository.save(Arrays.asList(est1,est2));
+		
+		// GRAVA CIDADES NO BANCO
+		cidadeRepository.save(Arrays.asList(c1,c2,c3));
 		
 	}
 }
