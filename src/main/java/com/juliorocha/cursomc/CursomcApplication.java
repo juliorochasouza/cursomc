@@ -1,5 +1,6 @@
 package com.juliorocha.cursomc;
 
+import java.lang.reflect.Array;
 import java.util.Arrays;
 
 import org.springframework.beans.factory.annotation.Autowired;
@@ -9,10 +10,15 @@ import org.springframework.boot.autoconfigure.SpringBootApplication;
 
 import com.juliorocha.cursomc.domain.Categoria;
 import com.juliorocha.cursomc.domain.Cidade;
+import com.juliorocha.cursomc.domain.Cliente;
+import com.juliorocha.cursomc.domain.Endereco;
 import com.juliorocha.cursomc.domain.Estado;
 import com.juliorocha.cursomc.domain.Produto;
+import com.juliorocha.cursomc.domain.enums.TipoCliente;
 import com.juliorocha.cursomc.repositories.CategoriaRepository;
 import com.juliorocha.cursomc.repositories.CidadeRepository;
+import com.juliorocha.cursomc.repositories.ClienteRepository;
+import com.juliorocha.cursomc.repositories.EnderecoRepository;
 import com.juliorocha.cursomc.repositories.EstadoRepository;
 import com.juliorocha.cursomc.repositories.ProdutoRepository;
 
@@ -28,6 +34,10 @@ public class CursomcApplication implements CommandLineRunner{
 	private EstadoRepository estadoRepository;
 	@Autowired
 	private CidadeRepository cidadeRepository;
+	@Autowired
+	private ClienteRepository clienteRepository;
+	@Autowired
+	private EnderecoRepository enderecoRepository;
 	
 	public static void main(String[] args) {
 		SpringApplication.run(CursomcApplication.class, args);
@@ -87,5 +97,21 @@ public class CursomcApplication implements CommandLineRunner{
 		// GRAVA CIDADES NO BANCO
 		cidadeRepository.save(Arrays.asList(c1,c2,c3));
 		
+		// CRIA CLIENTES
+		
+		Cliente cli1 = new Cliente(null, "Maria Silva", "maria@gmail.com", "36378912377", TipoCliente.PESSOAFISICA);
+		cli1.getTelefones().addAll(Arrays.asList("27363323","93838393"));
+		
+		Endereco e1 = new Endereco(null, "Rua Flores", "300", "apto 303", "Jardim", "38220834", cli1, c1);
+		Endereco e2 = new Endereco(null, "Avenida Matos", "105", "Sala 800", "Centro", "38777012", cli1, c2);
+		
+		cli1.getEnderecos().addAll(Arrays.asList(e1, e2));
+		
+		
+		// GRAVA CLIENTE
+		clienteRepository.save(Arrays.asList(cli1));
+		
+		// GRAVA ENDERECOS
+		enderecoRepository.save(Arrays.asList(e1, e2));
 	}
 }
